@@ -2,9 +2,9 @@
 
 // VARSAW
 SynthDef(\vars, {
-	|freq, amp, duration, att, out|
+	|freq, amp = 0, duration, att, out|
 	var sig = VarSaw.ar(freq, width: 0.5),
-	env = Env.perc(attack, duration);
+	env = Env.perc(att, duration);
 	sig = EnvGen.ar(env) * sig;
 	sig = sig * EnvGen.ar(Env.linen(0, duration, 0), doneAction: 2) * amp;
 	Out.ar(out, sig!2);
@@ -51,5 +51,29 @@ SynthDef(\klank, {
 	sig = sig * EnvGen.ar(Env.linen(0, duration, 0), doneAction: 2);
 	Out.ar(out, sig!2);
 }).add;
-Synth(\klank, [\freq, 300, \amp, 0.3, \duration, 2, \am])
-(1..10) -2
+// NOISE
+SynthDef(\noiz, {
+	|
+	amp,
+	att,
+	duration,
+	out,
+	freq
+	|
+	var sig = WhiteNoise.ar(1);
+	sig = BLowPass4.ar(sig, XLine.ar(freq.midicps + 60, 30, att + duration));
+	sig = sig * EnvGen.ar(Env.perc(att, duration), doneAction:2) * amp;
+	Out.ar(out, sig!2);
+}).add;
+// Synth(\noiz, [\amp, 0.9, \duration, 1, \out, 0, \freq, 110]);
+// LFO
+SynthDef(\noizLfo, {
+	|out|
+	var sig = WhiteNoise.ar(0.5),
+	lfo = SinOsc.ar(0.5, mul: 0.5) + 1;
+	sig = BLowPass4.ar(sig, lfo * 500);
+	Out.ar(out, sig!2);
+}).add;
+
+// 2!8
+// Synth(\vars, [\freq, 200, \duration, 2, \amp, 1]);

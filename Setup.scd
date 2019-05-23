@@ -6,7 +6,7 @@
 s.options.memSize = 8192 * 64;
 s.boot;
 
-p = ProxySpace.push(s);
+p = NodeProxy.new.play;
 p.fadeTime = 2;
 p.clock = TempoClock.default;
 // SAMPLES
@@ -14,7 +14,7 @@ Task({
 	var beatsPath = PathName(thisProcess.nowExecutingPath.dirname ++ '\\beats').files;
 	d = Dictionary.new;
 	d.postln;
-	3.wait;
+	5.wait;
 	beatsPath = PathName(thisProcess.nowExecutingPath.dirname ++ '\\beats').files;
 	beatsPath.do({
 		|el|
