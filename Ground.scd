@@ -31,8 +31,8 @@
 	\buf, d[\kick]
 );
 )
-[0.125, 0.125, 0.5, 0.25, 0.25, 0.25]
-[0.125, 0.125, 0.25, 0.25, 0.5]
+[0.125, 0.125, 0.5, 0.25, 0.25, 0.25];
+[0.125, 0.125, 0.25, 0.25, 0.5];
 ~kick.play;
 ~kick.stop;
 ~kick.quant = 1;
@@ -58,7 +58,7 @@ p.fadeTime  =2
 ~varsin = Pbind(
 	\instrument, \vars,
 	\octave, 6,
-	\att, 0,
+	\att, 0.1,
 	\scale, Scale.major,
 	\degree, Pseq([0, 2, 3, 2, 7, 6, 5, 4, 7, 0, 7, 0] + 2 , inf),
 	\dur, Pseq([0.25] * 1, inf),
@@ -66,6 +66,8 @@ p.fadeTime  =2
 	\duration, 1
 );
 )
+p.makeTempoClock;
+p.clock
 [0, 7, 0, 1,2,3, 4, 7,7,7,7]
 [0, 2, 3, 2, 7, 6, 5, 4, 7, 0, 7, 0]
 ~varsin.play;
@@ -76,7 +78,7 @@ p.fadeTime  =2
 (
 ~sinp = Pbind(
 	\instrument, \sinpan,
-	\octave, 3,
+	\octave, 5,
 	\att, 0,
 	\duration, 6,
 	\scale, Scale.major,

@@ -6,7 +6,12 @@
 s.options.memSize = 8192 * 64;
 s.boot;
 
-p = NodeProxy.new.play;
+m = MandelHub.start("gigino");
+m.gui;
+m.timer;
+m.changeTempo(120/60);
+m.tempoBus;
+p = ProxySpace.push(s);
 p.fadeTime = 2;
 p.clock = TempoClock.default;
 // SAMPLES
@@ -32,5 +37,3 @@ Task({
 	3.wait;
 }).start;
 )
-PathName("./").entries;
-s.plotTree
