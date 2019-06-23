@@ -2,18 +2,19 @@
 /************ SETUP ************/
 /*******************************/
 
-(
-s.options.memSize = 8192 * 64;
+
+s.options.memSize = 8192 * 128;
 s.boot;
+s.latency = 0.2;
 
 m = MandelHub.start("gigino");
+x = m.space;
+x[\scale] = Scale.major;
 m.gui;
-m.timer;
-m.changeTempo(120/60);
-m.tempoBus;
+m.changeTempo(90/60);
 p = ProxySpace.push(s);
 p.fadeTime = 2;
-p.clock = TempoClock.default;
+(
 // SAMPLES
 Task({
 	var beatsPath = PathName(thisProcess.nowExecutingPath.dirname ++ '\\beats').files;
@@ -32,8 +33,9 @@ Task({
 		d.add(sampleSymbol -> Buffer.read(s, sampleFullp).bufnum);
 	});
 	d.postln;
+	("snippets.scd").loadRelative;
 	("Synths.scd").loadRelative;
-	("Ground.scd").loadRelative;
+	("ground3.scd").loadRelative;
 	3.wait;
 }).start;
 )
