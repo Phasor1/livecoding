@@ -5,9 +5,10 @@
 
 s.options.memSize = 8192 * 128;
 s.boot;
-s.latency = 0.2;
+s.latency = 0.105;
 
 m = MandelHub.start("gigino");
+
 x = m.space;
 x[\scale] = Scale.major;
 m.gui;
@@ -35,7 +36,10 @@ Task({
 	d.postln;
 	("snippets.scd").loadRelative;
 	("Synths.scd").loadRelative;
-	("ground3.scd").loadRelative;
+	("ground4.scd").loadRelative;
 	3.wait;
 }).start;
 )
+
+{SinOsc.ar(200)!2}.play;
+s.scope

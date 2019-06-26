@@ -21,7 +21,7 @@ DDWSnippets.put("sampleP", "
 (
 ~s[0] = Pbind(
     \\instrument, \\sample,
-    \\buf, d[\\##name##],+
+    \\buf, d[\\##name##],
     \\rate, 1,
     \\dur, Pseq([1], inf),
     \\amp, 0
@@ -33,8 +33,7 @@ DDWSnippets.put("sampleP", "
 }
 )
 ~s.play;
-~s.quant = 4;
-~s.stop;");
+~s.quant = 4;");
 
 // SYNTH PATTERN DEFINITION
 DDWSnippets.put("synthP", "
@@ -57,5 +56,4 @@ DDWSnippets.put("synthP", "
 }
 )
 ~s.play;
-~s.quant = 4;
-~s.stop;");
+~s.quant = 4;");

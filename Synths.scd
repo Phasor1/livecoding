@@ -226,7 +226,7 @@ SynthDef(\waveTable1, {
 	Out.ar(out, sig!2);
 }).add;
 
-(SynthDef(\waveTable2, {
+SynthDef(\waveTable2, {
 	|freq=200, amp, att=0, sus=1, dec=0.1, out|
 	var sig = Signal.newClear(1024),
 	bf = Buffer.alloc(s, 2048), wt;
@@ -247,7 +247,7 @@ SynthDef(\waveTable1, {
 	sig = Osc.ar(bf, freq);
 	sig = sig * EnvGen.ar(Env.linen(att, sus, dec), doneAction: 2) * amp;
 	Out.ar(out, sig!2);
-}).add;)
+}).add;
 
 SynthDef(\armoBubble, {
 	|amp, freq=200, dec=0.5, sus=1, frBubble=30, out|
@@ -260,15 +260,15 @@ SynthDef(\armoBubble, {
 }).add;
 //IMPULSE
 SynthDef(\imp, {
-	|amp, out, freq|
-	var sig = Impulse.ar(2);
+	|amp, out, dec=0.5|
+	var sig = Impulse.ar(1);
+	sig = EnvGen.ar(Env.perc(0, dec), doneAction: 2) * sig * amp;
 	Out.ar(out, sig!2);
 }).add;
 // SINUSOIDAL GLITCH
 SynthDef(\gl1, {
-	|amp, out, start=1000, end=500|
-	var dec = 0.1,
-	sig = SinOsc.ar(XLine.ar(start, end, dec));
+	|amp, out, start=1000, end=500, dec=0.1|
+	var sig = SinOsc.ar(XLine.ar(start, end, dec));
 	sig = sig * EnvGen.ar(Env.linen(0, dec, 0.01), doneAction: 2) * amp;
 	Out.ar(out, sig!2);
 }).add;
