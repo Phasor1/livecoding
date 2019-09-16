@@ -48,7 +48,7 @@ DDWSnippets.put("synthP", "
 	\\degree, Pseq([1] , inf),
     \\dur, Pseq([1], inf),
     \\amp, 0
-)
+);
 ~s[1] = \\filter -> {
     |in|
     var sig = in;

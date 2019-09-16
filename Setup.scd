@@ -5,7 +5,7 @@
 
 s.options.memSize = 8192 * 128;
 s.boot;
-s.latency = 0.105;
+s.latency = 0;
 
 m = MandelHub.start("gigino");
 
@@ -36,7 +36,7 @@ Task({
 	d.postln;
 	("snippets.scd").loadRelative;
 	("Synths.scd").loadRelative;
-	("ground4.scd").loadRelative;
+	("ground6.scd").loadRelative;
 	3.wait;
 }).start;
 )

@@ -7,6 +7,13 @@ SynthDef(\vars, {
 	sig = sig * EnvGen.ar(Env.linen(att, sus, dec), doneAction: 2) * amp;
 	Out.ar(out, sig!2);
 }).add;
+// OSC
+SynthDef(\sin, {
+	|freq, amp = 0, sus, dec=0.1, att, out|
+	var sig = SinOsc.ar(freq);
+	sig = sig * EnvGen.ar(Env.linen(att, sus, dec), doneAction: 2) * amp;
+	Out.ar(out, sig!2);
+}).add;
 
 // SIN OSCILLATOR WITH PAN CONTROL
 SynthDef(\sinPan, {
