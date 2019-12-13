@@ -110,6 +110,34 @@ SynthDef(\sawf, {
 }).add;
 
 // FM
+
+SynthDef(\fm, {
+	|att=0, sus=0, rel=1, amp=0.1, freq=200, carFR=1, modFR=1, modA=0, ind=0, out=0|
+	var	indexEnv = ind,
+	modSin = SinOsc.ar(freq * modFR, mul:freq * modFR * indexEnv),
+	carrSin = SinOsc.ar((freq * carFR) + modSin);
+	carrSin = carrSin * EnvGen.ar(Env.linen(att, sus, rel), doneAction: 2) * amp;
+	Out.ar(0, carrSin!2);
+}).add;
+
+SynthDef(\fmBass, {
+	|att=0, sus=0, rel=1, amp=0.1, freq=200, carFR=1, modFR=1, modA=0, ind=0, out=0|
+	var	indexEnv = Line.ar(ind, 0, att + sus + rel),
+	modSin = SinOsc.ar(freq * modFR, mul:freq * modFR * indexEnv),
+	carrSin = SinOsc.ar((freq * carFR) + modSin);
+	carrSin = carrSin * EnvGen.ar(Env.linen(att, sus, rel), doneAction: 2) * amp;
+	Out.ar(0, carrSin!2);
+}).add;
+
+SynthDef(\fmEnv, {
+	|att=0, sus=0, rel=1, amp=0.1, freq=200, carFR=1, modFR=1, modA=0, ind=0, out=0|
+	var	indexEnv = Line.ar(ind, 0, att + sus + rel),
+	modSin = SinOsc.ar(freq * modFR, mul:freq * modFR * indexEnv),
+	carrSin = SinOsc.ar((freq * carFR) + modSin);
+	carrSin = carrSin * EnvGen.ar(Env.linen(att, sus, rel), doneAction: 2) * amp;
+	Out.ar(0, carrSin!2);
+}).add;
+
 SynthDef(\sawFM, {
 	|freq, amp=0.5, att=0, sus=1, dec=0.1, index=5, freqMod=100, out, pan=0|
 	var modulator = SinOsc.ar(freqMod) * index,
@@ -293,5 +321,17 @@ SynthDef(\organ, {
 	sig = sig * EnvGen.ar(Env.linen(0, att + sus + rel + 5, 0.1), doneAction: 2);
 	sig = sig * amp;
 	sig = FreeVerb.ar(sig, 0.5, 200, 2);
+	Out.ar(0, sig!2);
+}).add;
+SynthDef(\ethereal, {
+	|freq=200, amp= 0.1, att=0, sus=0, rel=1|
+	var sig = Klang.ar(
+		`[
+			[freq, freq * (4/3), freq * (3/2), freq * 2, freq * 4, freq * 6],
+			[0.9, 0.8, 0.2, 0.1, 0.1, 0.05, 0.01],
+			[0].stutter(7)
+		],
+	);
+	sig = sig * EnvGen.ar(Env.linen(att, sus, rel), doneAction:2) * amp;
 	Out.ar(0, sig!2);
 }).add;
