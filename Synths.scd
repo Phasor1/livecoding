@@ -225,10 +225,9 @@ SynthDef(\waveTable1, {
 		var out;
 		out = sin(x) + sin(5 * x);
 		out = out.cubed();
-		// out;
 	}, 0, 2pi);
 	buffer.loadCollection(signal.asWavetable);
-	sig = (Osc.ar(buffer, 200) * 2).fold(-0.5, 0.5);
+	sig = (Osc.ar(buffer, freq) * 2).fold(-0.5, 0.5);
 	sig = sig * EnvGen.ar(Env.linen(att, sus, dec), doneAction: 2) * amp;
 	Out.ar(out, sig!2);
 }).add;
@@ -278,4 +277,21 @@ SynthDef(\gl1, {
 	var sig = SinOsc.ar(XLine.ar(start, end, dec));
 	sig = sig * EnvGen.ar(Env.linen(0, dec, 0.01), doneAction: 2) * amp;
 	Out.ar(out, sig!2);
+}).add;
+
+// -------- ORGAN -----------
+SynthDef(\organ, {
+	|freq=200, amp=0.2, dur=0.5, att=0.1, sus=0, rel=1, envelope=1|
+	var /*osc1, osc2, osc3, osc4,*/
+	sig = Klang.ar(
+		`[
+			[freq, freq * 0.3, freq * 0.5, freq * (3/2), freq * 2, freq * 4, freq * 6],
+			[0.9, 0.5, 0.4, 0.9, 0.5, 0.1, 0.06],
+			[0,0,0,0,0,0,0]
+		]
+	) * EnvGen.ar(Env.linen(att, sus, rel));
+	sig = sig * EnvGen.ar(Env.linen(0, att + sus + rel + 5, 0.1), doneAction: 2);
+	sig = sig * amp;
+	sig = FreeVerb.ar(sig, 0.5, 200, 2);
+	Out.ar(0, sig!2);
 }).add;
