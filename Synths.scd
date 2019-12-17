@@ -335,3 +335,33 @@ SynthDef(\ethereal, {
 	sig = sig * EnvGen.ar(Env.linen(att, sus, rel), doneAction:2) * amp;
 	Out.ar(0, sig!2);
 }).add;
+
+SynthDef(\lightSound, {
+	|amp=0.5, freq=200, att=0, sus=0.5, rel=1, chord=4|
+	var amplitudes = switch(chord,
+		0, {[0.2,0,0,0]},
+		1, {[0.2, 0.05, 0,0]},
+		2, {[0.2, 0.05, 0.01, 0]},
+		3, {[0.2, 0.05, 0.01, 0.005]},
+	),
+	sig = Klang.ar(
+		`[
+			[freq, freq * (5/4), freq * (3/2), freq * (15/8)],
+			amplitudes,
+			[0,0,0,0]
+		]
+	) * EnvGen.ar(Env.linen(att, sus, rel), doneAction: 2) * amp;
+	// sig = BLowPass.ar(sig, MouseY.kr(200, 17000).poll);
+	sig = sig * LagUD.kr(amp, 0.5, 0.5);
+	Out.ar(0, sig!2);
+}).add;
+
+SynthDef(\stone, {
+	|amp=0.5|
+	var sig = BBandPass.ar(WhiteNoise.ar(), 200, 0.5) * BLowPass.ar(WhiteNoise.ar(), 100) * 40;
+	30.do({
+		var env = BLowPass.ar(WhiteNoise.ar(), 2);
+		sig = sig +( BBandPass.ar(WhiteNoise.ar(), Rand(400, 1000), 0.5) * env);
+	});
+	Out.ar(0, sig!2);
+}).add;
