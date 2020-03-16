@@ -121,21 +121,21 @@ SynthDef(\fm, {
 }).add;
 
 SynthDef(\fmBass, {
-	|att=0, sus=0, rel=1, amp=0.1, freq=200, carFR=1, modFR=1, modA=0, ind=0, out=0|
-	var	indexEnv = Line.ar(ind, 0, att + sus + rel),
+	|att=0, sus=0, dec=1, amp=0.1, freq=200, carFR=1, modFR=1, modA=0, ind=0, out=0|
+	var	indexEnv = Line.ar(ind, 0, att + sus + dec),
 	modSin = SinOsc.ar(freq * modFR, mul:freq * modFR * indexEnv),
 	carrSin = SinOsc.ar((freq * carFR) + modSin);
-	carrSin = carrSin * EnvGen.ar(Env.linen(att, sus, rel), doneAction: 2) * amp;
+	carrSin = carrSin * EnvGen.ar(Env.linen(att, sus, dec), doneAction: 2) * amp;
 	Out.ar(0, carrSin!2);
 }).add;
 
 SynthDef(\fmEnv, {
-	|att=0, sus=0, rel=1, amp=0.1, freq=200, carFR=1, modFR=1, modA=0, ind=0, out=0|
-	var	indexEnv = Line.ar(ind, 0, att + sus + rel),
+	|att=0, sus=0, dec=1, amp=0.1, freq=200, carFR=1, modFR=1, modA=0, ind=0, out=0|
+	var	indexEnv = Line.ar(0, ind, att + sus + dec),
 	modSin = SinOsc.ar(freq * modFR, mul:freq * modFR * indexEnv),
 	carrSin = SinOsc.ar((freq * carFR) + modSin);
-	carrSin = carrSin * EnvGen.ar(Env.linen(att, sus, rel), doneAction: 2) * amp;
-	Out.ar(0, carrSin!2);
+	carrSin = carrSin * EnvGen.ar(Env.linen(att, sus, dec), doneAction: 2) * amp;
+	Out.ar(out, carrSin!2);
 }).add;
 
 SynthDef(\sawFM, {
@@ -232,6 +232,18 @@ SynthDef(\bouncingBall, {
 	sig = sig * EnvGen.ar(Env.perc(0, dec, 1, 0), doneAction: 2) * amp;
 	Out.ar(out, sig!2);
 }).add;
+
+
+SynthDef(\lfoBounce, {
+	|freq, amp, dec=2, out, att=0.01, sus=0, lfoF=0.2, max=10|
+	var sig = SinOsc.ar(freq),
+	lfo = (SinOsc.ar(lfoF) * max) + max,
+	// env = (VarSaw.ar(XLine.ar(1,100,dec), width: 0) * 0.5) + 1;
+	env = (VarSaw.ar(lfo, width: 0.1) * 0.5) + 1;
+	sig = sig * EnvGen.ar(Env.linen(att, sus, dec), doneAction: 2) * env * amp;
+	Out.ar(out, sig!2);
+}).add;
+
 
 
 SynthDef(\sawFMSynth, {
@@ -357,11 +369,65 @@ SynthDef(\lightSound, {
 }).add;
 
 SynthDef(\stone, {
-	|amp=0.5|
+	|amp=0.5, out|
 	var sig = BBandPass.ar(WhiteNoise.ar(), 200, 0.5) * BLowPass.ar(WhiteNoise.ar(), 100) * 40;
 	30.do({
 		var env = BLowPass.ar(WhiteNoise.ar(), 2);
 		sig = sig +( BBandPass.ar(WhiteNoise.ar(), Rand(400, 1000), 0.5) * env);
 	});
-	Out.ar(0, sig!2);
+	Out.ar(out, sig!2);
+}).add;
+
+
+SynthDef(\phsr, {
+	|amp=0.5, freq=200, att=0.01, sus=0.5, dec=1, out|
+	var sig = Silent.ar(1);
+	[freq, freq * 2, freq * 3].do{
+		|item, i|
+		sig = sig + VarSaw.ar(item,0,1
+		) * 1/(i + 1);
+	};
+	sig = BLowPass.ar(sig, XLine.ar(10000, freq, att+sus+dec), 3);
+	sig = sig * EnvGen.ar(Env.linen(att, sus, dec), doneAction:2) * amp;
+	Out.ar(out, sig!2);
+}).add;
+
+SynthDef(\flanger, {
+	|freq, amp, dec=2, out, att=0.01, sus=0, lfoF=0.2, cf, dur=1|
+	var sig = VarSaw.ar(freq, width: 0.8),
+	lfo = VarSaw.ar(lfoF, 0,0, 0.003, 0.003),
+	// lfo = SinOsc.ar(lfoF, 0, 0.005, 0.005),
+	sig2 = VarSaw.ar(freq * 2);
+	sig = sig + sig2;
+	sig = sig + AllpassL.ar(sig, 10, lfo, 0);
+	sig = sig * EnvGen.ar(Env.linen(att, sus, dec), doneAction: 2) * amp;
+	Out.ar(out, sig!2);
+}).add;
+
+SynthDef(\pad, {
+	|amp=0.5, freq=200, att=0.01, sus=0.5, dec=1, lfo=0.2, out|
+	var sig = Silent.ar(1);
+	[freq / 2, freq, freq * 2].do{
+		|item, i|
+		sig = sig + VarSaw.ar(item,0,1
+		) * 1/(i + 1);
+	};
+	sig = BLowPass4.ar(sig, SinOsc.ar(lfo, 0, 200, freq + 200), 3);
+	sig = FreeVerb.ar(sig, 0.3, 3, 10);
+	sig = sig * EnvGen.ar(Env.linen(att, sus, dec + 10), doneAction:2) * amp;
+	Out.ar(out, sig!2);
+}).add;
+
+SynthDef(\glitchCloud, {
+	|freq=12000, amp=0.5, duration=4, numGl=90, out, fMod=(12000*1.23), ampMod=2|
+	var selector = Amplitude.kr(BLowPass4.ar(WhiteNoise.ar(10), 30, 0.2)).clip(0, 1),
+	sig = [
+		SinOsc.ar(freq, add:SinOsc.ar(freq*1.34, mul:1.23)),
+		SinOsc.ar(freq*1.34, add:SinOsc.ar(freq*4.34, mul:4.23)),
+		SinOsc.ar(freq*3.24, add:SinOsc.ar(freq*9.34, mul:1.23))
+	];
+	selector.poll;
+	sig = SelectX.ar(selector*sig.size, sig);
+	sig = sig * EnvGen.ar(Env.sine(duration), doneAction: 2) * amp;
+	Out.ar(out, sig!2);
 }).add;

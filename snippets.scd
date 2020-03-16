@@ -1,6 +1,6 @@
 // SYNTH DEFINITION
 DDWSnippets.put("synthdef", "SynthDef(\##name##, {
-	|freq, amp=0.5, sus=1, dec=0.1, out,|
+	|freq, amp=0.5, att=0.01, sus=1, dec=0.1, out,|
     var sig = SinOsc.ar(freq);
 	sig = sig * EnvGen.ar(Env.linen(att, sus, dec), doneAction: 2) * amp;
 	Out.ar(out, sig!2);
