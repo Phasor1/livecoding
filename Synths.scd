@@ -431,3 +431,51 @@ SynthDef(\glitchCloud, {
 	sig = sig * EnvGen.ar(Env.sine(duration), doneAction: 2) * amp;
 	Out.ar(out, sig!2);
 }).add;
+
+SynthDef(\notchEnv, {
+	|amp=0.5, dur=1, freq=200, att=0.01, sus=0.5, dec=1, out|
+	var sig = VarSaw.ar(freq),
+	lfEnv = SinOsc.ar((1/dur)/2, 3.14, 20, 20),
+	lfCtFil = SinOsc.ar((1/dur)/2, 3.14, 15000, 15000),
+	env = SinOsc.ar(lfEnv).abs;
+	sig = BLowPass.ar(sig, lfCtFil, 5);
+	sig = sig * env * EnvGen.ar(Env.linen(att, sus, dec), doneAction: 2) * amp;
+	Out.ar(out, sig!2);
+}).add;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

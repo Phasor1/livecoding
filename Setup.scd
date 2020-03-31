@@ -15,11 +15,11 @@ s.waitForBoot({
 	(
 		// SAMPLES
 		Task({
-			var beatsPath = PathName(thisProcess.nowExecutingPath.dirname ++ '\\beats').files;
+			var beatsPath = PathName(thisProcess.nowExecutingPath.dirname ++ '\\samples').files;
 			d = Dictionary.new;
 			d.postln;
 			3.wait;
-			beatsPath = PathName(thisProcess.nowExecutingPath.dirname ++ '\\beats').files;
+			beatsPath = PathName(thisProcess.nowExecutingPath.dirname ++ '\\samples').files;
 			beatsPath.do({
 				|el|
 				var sampleFullp, sample, sampleSymbol;

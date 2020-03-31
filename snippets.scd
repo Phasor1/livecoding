@@ -57,3 +57,33 @@ DDWSnippets.put("synthP", "
 )
 ~s.play;
 ~s.quant = 4;");
+// PBINDEF SYNTH DEFINITION
+DDWSnippets.put("pds", "
+(
+Pbindef(
+    \\instrument, \\##name##,
+    \\att, 0,
+	\\sus, 0,
+    \\dec, 1,
+	\\octave, 2,
+	\\scale, x[\\scale],
+	\\degree, Pseq([1] , inf),
+    \\dur, Pseq([1], inf),
+    \\amp, 0
+);
+Pbindef(\\n).stop;
+Pbindef(\\n).quant = 4;
+Pbindef(\\n).play;");
+
+// PBINDEF SAMPLE DEFINITION
+DDWSnippets.put("pds", "
+(
+Pbindef(
+    \\instrument, \\sample,
+    \\buf, d[\\##name##],
+    \\dur, Pseq([1], inf),
+    \\amp, 0
+);
+Pbindef(\\n).stop;
+Pbindef(\\n).quant = 4;
+Pbindef(\\n).play;");
