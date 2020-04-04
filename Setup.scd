@@ -5,7 +5,7 @@
 (
 s.options.memSize = 8192 * 128;
 s.waitForBoot({
-
+	n = NetAddr("192.168.1.5", 1337);
 	m = MandelHub.start("gigino");
 	x = m.space;
 	x[\scale] = Scale.minor;
@@ -34,7 +34,7 @@ s.waitForBoot({
 			("snippets.scd").loadRelative;
 			("Synths.scd").loadRelative;
 			// ("RVVV_analysis.scd").loadRelative;
-			("ground3.scd").loadRelative;
+			("ground5.scd").loadRelative;
 			1.wait;
 			// a = Synth(\features_and_onset_analyzer, [\inBus, s.outputBus]);
 		}).start;

@@ -96,6 +96,16 @@ Pbindef(\env,
 Pbindef(\env).play;
 )
 (
+SynthDef(\fmBass, {
+	|att=0, sus=0, dec=1, amp=0.1, freq=200, carFR=1, modFR=1, modA=0, ind=0, out=0|
+	var	indexEnv = Line.ar(ind, 0, att + sus + dec),
+	modSin = SinOsc.ar(freq , mul:MouseX.kr(10, 300) * indexEnv),
+	carrSin = SinOsc.ar((freq * carFR) + modSin);
+	carrSin = carrSin * EnvGen.ar(Env.linen(att, sus, dec), doneAction: 2) * amp;
+	Out.ar(0, carrSin!2);
+}).add;
+)
+(
 Pbindef(\k).stop;
 Pbindef(\s).stop;
 )
