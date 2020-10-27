@@ -1,17 +1,18 @@
 /*******************************/
 /************ SETUP ************/
 /*******************************/
-
+s.boot
 (
 s.options.memSize = 8192 * 128;
 s.waitForBoot({
-	n = NetAddr("192.168.1.5", 1337);
-	m = MandelHub.start("gigino");
+
+/*	m = MandelHub.start("gigino");
 	x = m.space;
 	x[\scale] = Scale.minor;
-	m.gui;
+	m.gui;*/
 	s.meter;
 	s.scope;
+	s.sync;
 	(
 		// SAMPLES
 		Task({
@@ -32,10 +33,18 @@ s.waitForBoot({
 			});
 			d.postln;
 			("snippets.scd").loadRelative;
+			s.sync;
 			("Synths.scd").loadRelative;
+			s.sync;
 			// ("RVVV_analysis.scd").loadRelative;
-			("ground5.scd").loadRelative;
-			1.wait;
+			// ("ground8.scd").loadRelative;
+			// s.sync;
+			// 1.wait;
+			/*~src = Group.new;
+			~fx = Group.after(~src);
+			~fxBus = Bus.audio(s);
+			Synth(\fx, [\in, ~fxBus.index], ~fx);*/
+			// Synth(\rev, [\in, ~fxBus], ~fx);
 			// a = Synth(\features_and_onset_analyzer, [\inBus, s.outputBus]);
 		}).start;
 	)
