@@ -339,7 +339,7 @@ SynthDef(\organ, {
 	Out.ar(out, Pan2.ar(sig, pan));
 }).add;
 SynthDef(\ethereal, {
-	|freq=200, amp= 0.1, att=0, sus=0, rel=1, out, pan=0|
+	|freq=200, amp= 0.1, att=0, sus=0, dec=1, out, pan=0|
 	var sig = Klang.ar(
 		`[
 			[freq, freq * (4/3), freq * (3/2), freq * 2, freq * 4, freq * 6],
@@ -347,7 +347,7 @@ SynthDef(\ethereal, {
 			[0].stutter(7)
 		],
 	);
-	sig = sig * EnvGen.ar(Env.linen(att, sus, rel), doneAction:2) * amp;
+	sig = sig * EnvGen.ar(Env.linen(att, sus, dec), doneAction:2) * amp;
 	Out.ar(out, Pan2.ar(sig, pan));
 }).add;
 
