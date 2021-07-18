@@ -15,6 +15,13 @@ SynthDef(\sin, {
 	Out.ar(out, Pan2.ar(sig, pan));
 }).add;
 
+/*SynthDef(\square, {
+	|freq, amp = 0, sus, dec=0.1, att, out, pan=0|
+	var sig = VarSaw.ar(freq, width: 0.5);
+	sig = sig * EnvGen.ar(Env.linen(att, sus, dec), doneAction: 2) * amp;
+	Out.ar(out, Pan2.ar(sig, pan));
+}).add;*/
+
 // SIN OSCILLATOR WITH PAN CONTROL
 SynthDef(\sinPan, {
 	|out, amp, freq=200, att=0, sus=1, dec=0.2, pan=0|
@@ -562,6 +569,15 @@ SynthDef(\particles, {
 	sig = sig * EnvGen.ar(Env.linen(att, sus, dec), doneAction: 2) * amp;
 	Out.ar(out, Pan2.ar(sig, pan));
 }).add;
+
+SynthDef(\ambient, {
+	|freq=200, amp = 0, sus, dec=0.1, att, out, pan=0, cf=400|
+	var sig = VarSaw.ar(freq, width: 0);
+	sig = BLowPass4.ar(sig, cf);
+	sig = sig * EnvGen.ar(Env.linen(att, sus, dec), doneAction: 2) * amp;
+	Out.ar(out, Pan2.ar(sig, pan));
+}).add;
+
 /*
 Synth(\am, [\amp, 0.4, \dur, 2, \att, 0.01, \sus, 0, \dec, 2, \freq, 10000, \out, 0])
 Env.xyc([[0.0, 0.0, \exp], [0.01, 1, \squared], [1, 0, \exp]]).plot

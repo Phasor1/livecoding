@@ -4,6 +4,8 @@
 s.boot
 (
 s.options.memSize = 8192 * 128;
+// s.options.inDevice_("MME : Microphone (Realtek(R) Audio)");
+// s.options.outDevice_("MME : Speakers (Realtek(R) Audio");
 s.waitForBoot({
 
 /*	m = MandelHub.start("gigino");
@@ -32,7 +34,7 @@ s.waitForBoot({
 				d.add(sampleSymbol -> Buffer.read(s, sampleFullp).bufnum);
 			});
 			d.postln;
-			("snippets.scd").loadRelative;
+			// ("snippets.scd").loadRelative;
 			s.sync;
 			("Synths.scd").loadRelative;
 			s.sync;
