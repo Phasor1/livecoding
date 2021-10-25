@@ -52,3 +52,19 @@ s.waitForBoot({
 	)
 })
 )
+
+(
+Pbindef(\k,
+	\instrument, \metronome,
+	\freq, Pseq([58, 50,50, 50]+10, inf).midicps,
+	// \buf, Pseq([d[\Kick08]], inf),
+	\dur, Pseq([
+		// Pseq([1], 6),
+		Pseq([1, 1, 1, 1], 8),
+	], inf),
+	\rate, Pseq([1], inf),
+	\pan, 0,
+	\amp, 0.7,
+);
+Pbindef(\k).stop.quant_([4, 0]).play();
+)

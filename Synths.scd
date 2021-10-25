@@ -36,9 +36,11 @@ SynthDef(\sample, {
 	buf,
 	out,
 	rate=1,
-	pan=0
+	pan=0,
+	mix=0
 	|
 	var sig = PlayBuf.ar(2, buf, rate, doneAction: 2) * amp;
+	sig = FreeVerb.ar(sig, mix, 10, 20);
 	Out.ar(out, Pan2.ar(sig, pan));
 }).add;
 
@@ -577,6 +579,52 @@ SynthDef(\ambient, {
 	sig = sig * EnvGen.ar(Env.linen(att, sus, dec), doneAction: 2) * amp;
 	Out.ar(out, Pan2.ar(sig, pan));
 }).add;
+
+SynthDef(\down, {
+	|freq=200, amp = 0, sus, dec=0.1, att, out, pan=0|
+	var newFreq = XLine.ar(freq, 60, att+sus+dec),
+	newFreq2 = XLine.ar(60, freq, att+sus+dec),
+	sig = VarSaw.ar(newFreq, width: 0),
+	sig2 = VarSaw.ar(newFreq2*2, width: 0);
+	sig = BLowPass4.ar(sig, newFreq*6);
+	sig = sig * EnvGen.ar(Env.linen(att, sus, dec), doneAction: 2) * amp;
+	Out.ar(out, Pan2.ar(sig, pan));
+}).add;
+
+SynthDef(\varsAmbient, {
+	|amp=0.5, freq=200, att=0.01, sus=0.5, dec=1, lfoF=0.5 ind, out, pan=0|
+	var first = BLowPass.ar(
+		VarSaw.ar(freq, width:0), freq*2
+	),
+	second = BLowPass.ar(
+		VarSaw.ar(
+			(freq*2), width:0
+
+	), (freq*4))*0.2,
+	sig = (first+second) * EnvGen.ar(Env.linen(att, sus, dec), doneAction: 2) * amp;
+	Out.ar(out, Pan2.ar(sig, pan));
+}).add;
+
+
+
+SynthDef(\metronome, {
+  |
+  out=0,
+  amp=1, freq=1000, pos=0.0,
+  rel=0.1
+  |
+  var sig, env, fenv;
+
+  // amplitude envelope
+  env   = EnvGen.ar(Env.perc( 0.001, rel), doneAction:2);
+  // cut frequency envelope
+  sig = SinOsc.ar(freq);
+  //sig = RLPF.ar(sig, rf*fenv, rq);
+  sig = sig * env * amp;
+  Out.ar(out, Pan2.ar(sig, pos));
+}).add;
+
+// Synth(\down, [\freq, 200, \amp, 0.7,  \att, 0.01, \sus, 0, \out, 0, \dec, 8])
 
 /*
 Synth(\am, [\amp, 0.4, \dur, 2, \att, 0.01, \sus, 0, \dec, 2, \freq, 10000, \out, 0])
