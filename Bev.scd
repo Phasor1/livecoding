@@ -12,10 +12,7 @@ Pbindef(\s1,
 	\root, Pfunc({~root}),
 	\distortion, 0.6,
 	\degree, Pseq([
-		Pseq([0], 1).stutter(1),
-		Pseq([1], 1).stutter(1),
-		Pseq([2], 1).stutter(1),
-		Pseq([3], 1).stutter(1),
+		Pseq([0,1,2,3], 1).stutter(1),
 		// Pseq([[2, 6, 7]], 1)
 
 	], inf).stutter(16),

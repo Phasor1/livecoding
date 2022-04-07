@@ -3,7 +3,7 @@ StageLimiter.activate;
 ~scale = Scale.major;
 Scale.names;
 ~root = 0;
-s.latency = 0;
+s.latency = 0.201;
 
 (
 Pbindef(\k,
@@ -24,11 +24,11 @@ Pbindef(\k).stop.quant_([4, 0]).play();
 (
 Pbindef(\cl,
 	\instrument, \sample,
-	\buf, Pseq([d[\Clap04]], inf),
+	\buf, Pseq([d[\Clap07]], inf),
 	\dur, Pseq([
 		// Pseq([2], 3),
 		// Pseq([0.25].stutter(8), 1),
-		Pseq([0.25], 1),
+		Pseq([0.75], 1),
 	], inf),
 	\rate, Pseq([1], inf),
 	\pan, 0,
@@ -37,50 +37,52 @@ Pbindef(\cl,
 Pbindef(\cl).stop.quant_([4, 0]).play();
 )
 
-(
+
 (
 Pbindef(\s1,
-	\instrument, \varsLfo,
+	\instrument, \varsAmbient,
 	\distortion, 0.5,
 	\octave, Prand([4], inf),
 	\scale, Pfunc({~scale}),
 	\root, Pfunc({~root}),
 	\degree, Pseq([
-		Pseq([[0, 2, 4], [3,5,7]], 1).stutter(1),
+		Pseq([[0, 2, 4], [3,5,7], [4,6,8]], 1).stutter(1),
 		Pseq([[0, 2, 4], [3,5,7], [4,6,8]], 1).stutter(1),
 		Pseq([[-2,0,2]+7, [3,5,7], [4,6,8]], 1).stutter(1),
 	], inf),
 	\dur, Pseq([
 		Pseq([8, 2, 2], 1),
 		Pseq([8, 2, 2], 1),
+		Pseq([8, 4, 4], 1),
 		// Pseq([8, 8], 1)
 	], inf),
 	\att, 0.01,
 	\ind, 10,
 	\sus, 0,
-	\dec, Pkey(\dur)*l.beatDur,
+	\dec, Pkey(\dur),
 	\pan, 0,
 	\amp, 0
 	);
 Pbindef(\s1).stop.quant_([4, 0]).play(l);
 )
-)
+
 
 (
 Pbindef(\s2,
-	\instrument, \bouncing,
+	\instrument, \sin,
 	\distortion, 0.5,
 	\octave, Prand([6], inf),
 	\scale, Pfunc({~scale}),
 	\root, Pfunc({~root}),
 	\degree, Pseq([
-		Prand([0,2,0,3,5,3, -2, -2], 1)
-	], inf).stutter(2),
+		Pseq([0,6,0,7], 2),
+		Pseq([0,6,0,9], 2)
+	], inf).stutter(1),
 	\dur, Pseq([
-		4
+		0.25
 	], inf),
-	\att, 0.01,
-	\ind, 10,
+	\att, 0.001,
+	\ind, 20,
 	\sus, 0,
 	\dec, Pkey(\dur)*l.beatDur,
 	\pan, 0,

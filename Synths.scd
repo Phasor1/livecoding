@@ -37,10 +37,28 @@ SynthDef(\sample, {
 	out,
 	rate=1,
 	pan=0,
-	mix=0
+	mix=0,
+	room=10
 	|
-	var sig = PlayBuf.ar(2, buf, rate, doneAction: 2) * amp;
+	var sig = PlayBuf.ar(2, buf, MouseX.kr(0.5, 1.5), doneAction: 2) * amp;
+	sig = FreeVerb.ar(sig, mix, room, 20);
+	Out.ar(out, Pan2.ar(sig, pan));
+}).add;
+
+SynthDef(\sampleFil, {
+	|
+	amp,
+	buf,
+	out,
+	rate=1,
+	pan=0,
+	mix=0,
+	del=1
+	|
+	var sig = PlayBuf.ar(2, buf, rate) * amp;
 	sig = FreeVerb.ar(sig, mix, 10, 20);
+	sig = sig + CombC.ar(sig, 1, l.beatDur/2, 4);
+	sig = sig * EnvGen.ar(Env.linen(0.001, 4, 0.001), doneAction: 2);
 	Out.ar(out, Pan2.ar(sig, pan));
 }).add;
 
@@ -161,8 +179,8 @@ SynthDef(\sawFM, {
 
 // VIOLIN
 SynthDef(\violin, {
-	| freq, sus, amp=0.25, out, pan=0|
-	var env = EnvGen.ar(Env.linen(0.1, sus, 0.1), doneAction:2),
+	| freq, dec, amp=0.25, out, pan=0|
+	var env = EnvGen.ar(Env.linen(0.1, dec, 0.1), doneAction:2),
 	sig = VarSaw.ar(
 		freq,
 		width:LFNoise2.kr(1).range(0.2, 0.8)*SinOsc.kr(5, Rand(0.0, 1.0)).range(0.7,0.8))*0.25;
@@ -486,7 +504,7 @@ SynthDef(\distortion, {
 	sig = VarSaw.ar(freq, width:0.5+distortion,add:mod);
 	// sig = BLowPass4.ar(sig, MouseX.kr(freq, 20000));
 	// sig = sig + CombC.ar(sig, 1, 0.25, 2);
-	sig = sig * EnvGen.ar(Env.linen(att, sus, dec*4), doneAction: 2) * amp * 0.01;
+	sig = sig * EnvGen.ar(Env.linen(att, sus, dec), doneAction: 2) * amp * 0.01;
 	Out.ar(out, Pan2.ar(sig, pan));
 }).add;
 
@@ -605,7 +623,22 @@ SynthDef(\varsAmbient, {
 	Out.ar(out, Pan2.ar(sig, pan));
 }).add;
 
-
+SynthDef(\distortionPulse, {
+	|amp=0.5, att=0.01, sus=0, dec=1, freq=440, pan=0, lfo=1, out|
+	var sig = Pulse.ar(freq) + SinOscFB.ar(freq/2, 70),
+	nArms = 5,
+	det = 0;
+	nArms.do{
+		|i|
+		sig = sig + SinOsc.ar(freq*(i+1)+det) * nArms/(i+1);
+		sig = sig + SinOsc.ar(freq/(i+1)-det) * nArms/(i+1);
+	};
+	// sig = (sig * 30).clip(-1, 1);
+	sig = sig.clip(-1, 1);
+	sig = BLowPass4.ar(sig, freq*7);
+	sig = sig * EnvGen.ar(Env.linen(att, sus, dec), doneAction: 2)*amp;
+	Out.ar(out, Pan2.ar(sig, pan))
+}).add;
 
 SynthDef(\metronome, {
   |
@@ -624,15 +657,75 @@ SynthDef(\metronome, {
   Out.ar(out, Pan2.ar(sig, pos));
 }).add;
 
-// Synth(\down, [\freq, 200, \amp, 0.7,  \att, 0.01, \sus, 0, \out, 0, \dec, 8])
+SynthDef(\teng, {
+	|amp=0.5, att=0.01, sus=0, dec=1, freq=440, pan=0, lfo=1, amount=8, out|
+	var sig = VarSaw.ar(freq),
+	env = XLine.ar(freq*amount, freq, 0.2);
+	sig = BLowPass4.ar(sig, env);
+	sig = sig * EnvGen.ar(Env.linen(att, sus, dec), doneAction: 2)*amp;
+	Out.ar(out, Pan2.ar(sig, pan))
+}).add;
+
+SynthDef(\distortionPulseRandom, {
+	|amp=0.5, att=0.01, sus=0, dec=1, freq=440, pan=0, lfo=1, out|
+	var sig = Pulse.ar(freq) + SinOscFB.ar(freq/2, 70),
+	nArms = 5,
+	det = 0;
+	nArms.do{
+		|i|
+		sig = sig + SinOsc.ar(freq*(i+1)+det) * nArms/(i+1);
+		sig = sig + SinOsc.ar(freq/(i+1)-det) * nArms/(i+1);
+	};
+	// sig = (sig * 30).clip(-1, 1);
+	sig = sig.clip(-1, 1);
+	sig = BLowPass4.ar(sig, TExpRand.kr(lo: freq, hi: freq*6, trig: Impulse.ar(10, add:-0.01)));
+	sig = sig * EnvGen.ar(Env.linen(att, sus, dec), doneAction: 2)*amp;
+	Out.ar(out, Pan2.ar(sig, pan))
+}).add;
+
+
+SynthDef(\wing, {
+	|amp=0.5, att=0.01, sus=0, dec=1, dur, freq=440, pan=0, lfo=1, out|
+	var sig = VarSaw.ar(XLine.ar(60, freq, dec/8));
+	sig = BLowPass4.ar(sig, XLine.ar(freq, freq*10, dec/8));
+	sig = sig * EnvGen.ar(Env.linen(att, sus, dec), doneAction: 2)*amp;
+	Out.ar(out, Pan2.ar(sig, pan))
+}).add;
+
+// (
+SynthDef(\distortedBass, {
+	|amp=0.5, att=0.01, sus=0, dec=1, dur, freq=440, pan=0, out|
+	var sig = SinOscFB.ar(freq, SinOsc.ar(freq/4 + SinOsc.ar((freq*5))*2)*XLine.ar(2,0.2, att+sus+dec));
+	sig = BLowPass4.ar(sig, 7000);
+	sig = sig * EnvGen.ar(Env.linen(att, sus, dec), doneAction: 2)*amp;
+	Out.ar(out, Pan2.ar(sig, pan))
+}).add;
+// )
+
+/////////////////////////////////////////////////////////////
+//////////////////TEMPLATE SYNTH/////////////////////////////
+/////////////////////////////////////////////////////////////
+
+
+/*
+SynthDef(\sinth, {
+	|amp=0.5, att=0.01, sus=0, dec=1, dur, freq=440, pan=0, out|
+	var sig =
+	sig = sig * EnvGen.ar(Env.linen(att, sus, dec), doneAction: 2)*amp;
+	Out.ar(out, Pan2.ar(sig, pan))
+}).add;
+*/
+
+
+
+/*Pbindef(\key, \instrument, \distortedBass, \freq, Pseq([100], inf), \amp, 0.7,  \att, 0.01, \sus, 0, \out, 0, \dec, 2,\dur, 2).play
+Pbindef(\key).stop*/
 
 /*
 Synth(\am, [\amp, 0.4, \dur, 2, \att, 0.01, \sus, 0, \dec, 2, \freq, 10000, \out, 0])
 Env.xyc([[0.0, 0.0, \exp], [0.01, 1, \squared], [1, 0, \exp]]).plot
 
 (Env.xyc([[0.0, 0.0, \exp], [0.01, 1, \squared], [1, 0, \exp]])*300).plot*/
-
-
 
 
 

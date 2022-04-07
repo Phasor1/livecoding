@@ -2,7 +2,7 @@ TempoClock.default = LinkClock(120/60).latency_(Server.default.latency);
 l = TempoClock.default;
 
 
-TempoClock.default.tempo_(120/60)
+TempoClock.default.tempo_(100/60)
 
 
 (
