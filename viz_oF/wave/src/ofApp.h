@@ -3,6 +3,7 @@
 #include "ofMain.h"
 #include "Wave.h"
 #include "Gradients.h"
+#include "Images.h"
 
 class ofApp : public ofBaseApp{
 
@@ -23,9 +24,15 @@ class ofApp : public ofBaseApp{
 		void dragEvent(ofDragInfo dragInfo);
 		void gotMessage(ofMessage msg);
 
-		Wave waves = Wave(300, 30, 30, 30);
+		int mouseX;
 
-		// Gradients gr = Gradients(40);
+		Wave waves = Wave(1, 300, 30, 30);
+
+		Gradients gr = Gradients(0, ofGetWidth());
+		Gradients gr1 = Gradients(30, 50);
+		Gradients gr2 = Gradients(50, 100);
+
+		Images images = Images();
 
 		ofTrueTypeFont myFont;
 };

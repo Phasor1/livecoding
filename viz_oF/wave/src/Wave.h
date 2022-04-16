@@ -15,7 +15,7 @@ class Wave {
 		float rotationIndex = 0;
 		float pi = 3.14159265358979323846;
 
-		float sinMaxA = 0.2;
+		float sinMaxA = 40;
 		// int wave;
 
 		// Wave(){}
@@ -44,15 +44,18 @@ class Wave {
 		}
 
 		void update() {
-			// float time = ofGetElapsedTimef();
-			rotationIndex = rotationIndex > pi ? rotationIndex/pi : rotationIndex + 0.002;
-			// for (int i = 0; i < numWaves; i++) {
-			// 	for (int ind = 0; ind < numPoints *numPoints; ind++){
-			// 		ofVec3f currV = meshes[i].getVertex(ind);
-			// 		currV.set(currV.x, currV.y, currV.z+sin((time) + ind%numPoints)*sinMaxA);
-			// 		meshes[i].setVertex(ind, currV);
-			// 	}
-			// }
+			float time = ofGetElapsedTimef();
+			// rotationIndex = rotationIndex > pi ? rotationIndex/pi : rotationIndex + 0.002;
+			rotationIndex = pi/2;
+			for (int i = 0; i < numWaves; i++) {
+				for (int ind = 0; ind < numPoints *numPoints; ind++){
+					ofVec3f currV = meshes[i].getVertex(ind);
+					// int currX = (int)(ind % numPoints);
+					// int currY = (int)(ind / numPoints);
+					currV.set(currV.x, currV.y, sin(((time*15) + (ind % numPoints))/4) * sinMaxA);
+					meshes[i].setVertex(ind, currV);
+				}
+			}
 		}
 
 		void draw() {

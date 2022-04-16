@@ -6,20 +6,27 @@ using namespace std;
 //--------------------------------------------------------------
 void ofApp::setup(){
 	waves.setup();
-	// gr.setup();
+	gr.setup();
+	gr1.setup();
+	gr2.setup();
 	myFont.load("GzaRegular-Desktop.ttf", 32);
+	images.setup();
 }
 
 //--------------------------------------------------------------
 void ofApp::update(){
 	waves.update();
+	images.update(mouseX);
 }
 
 //--------------------------------------------------------------
 void ofApp::draw(){
 	ofBackground(0,0,0);
-	// gr.draw();
+	gr.draw();
+	gr1.draw();
+	gr2.draw();
 	waves.draw();
+	images.draw();
 	myFont.drawString(to_string(ofGetFrameRate()), 10, 50);
 }
 
