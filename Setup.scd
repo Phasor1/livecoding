@@ -4,7 +4,7 @@
 s.boot
 s.latency = 0.221;
 (
-s.options.memSize = 8192 * 128;
+s.options.memSize = 8192 * 256;
 // s.options.inDevice_("MME : Microphone (Realtek(R) Audio)");
 // s.options.outDevice_("MME : Speakers (Realtek(R) Audio");
 s.waitForBoot({
@@ -19,16 +19,16 @@ s.waitForBoot({
 	(
 		// SAMPLES
 		Task({
-			var beatsPath = PathName(thisProcess.nowExecutingPath.dirname ++ '\\samples').files;
+			var beatsPath = PathName(thisProcess.nowExecutingPath.dirname ++ '/samples').files;
 			d = Dictionary.new;
 			d.postln;
 			3.wait;
-			beatsPath = PathName(thisProcess.nowExecutingPath.dirname ++ '\\samples').files;
+			beatsPath = PathName(thisProcess.nowExecutingPath.dirname ++ '/samples').files;
 			beatsPath.do({
 				|el|
 				var sampleFullp, sample, sampleSymbol;
 				sampleFullp= el.asAbsolutePath;
-				sample = sampleFullp.split($\\);
+				sample = sampleFullp.split($/);
 				sample = sample[sample.size - 1];
 				sampleSymbol = sample.replace(".wav", "").asSymbol;
 				("loaded" + sample).postln;
